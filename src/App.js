@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
@@ -13,16 +14,24 @@ function App() {
     {name: 'abode reader', price: '$200'}
   ]
   
-  const productName = productsData.map( product => product.name)
-  console.log(productName)
+  const productName = productsData.map( product => product.name);
+  console.log(productName);
   return (
     <div className="App">
       <header className="App-header">
+      <Counter></Counter>
+      <Users></Users>
         <ul>
           {names.map(name => <li>{name}</li>)}
           {productsData.map( productName => <li>{productName.name }</li>)}
-        </ul>
-      <Products product = {productsData[0]}></Products> {/*from array*/}
+        </ul>  
+        {
+          productsData.map(pd=> <Product product = {pd}> </Product>)
+        }
+
+      <Product product={productsData[0]}></Product>
+      <Product product={productsData[1]}></Product>
+      <Product product={productsData[2]}></Product>
 
         <Person name='Bootstrap' prof = 'Responsive Style'></Person> {/*Inline Default Value */}
         <Person name = {names[0]} prof = 'Programming'></Person> {/* Data pass to the props from array */}
@@ -32,6 +41,17 @@ function App() {
       </header>
     </div>
   );
+}
+
+function Counter(){
+  const [count, setCount] = useState(10);
+  return (
+    <div>
+      <h1>Count : {count} </h1>
+      <button onClick={() => {setCount(count -1 )} }>Decrease</button>
+      <button onClick={() => {setCount(count + 1)} }>Increase</button>
+    </div>
+  )
 }
 
 function Person(props) {
@@ -50,7 +70,27 @@ function Person(props) {
   )
 }
 
-function Products(props) {
+function Users() {
+  const [ users, setUsers] = useState([]);
+  useEffect( () => {
+    const url = 'https://jsonplaceholder.typicode.com/users';
+    fetch(url)
+    .then(response => response.json())
+    .then(data => setUsers(data))
+  }, [])
+  return(
+    <div>
+      <h3>Dynamic Users: {users.length}</h3>
+      <ul>
+        {
+          users.map( user => <li>{user.name}</li>)
+        }
+      </ul>
+    </div>
+  )
+}
+
+function Product(props) {
   const productStyle = {
     background: 'red',
     color: 'white',
